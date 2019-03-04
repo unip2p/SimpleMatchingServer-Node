@@ -1,0 +1,1 @@
+heroku apps:destroy --app アプリ名
