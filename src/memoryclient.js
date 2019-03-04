@@ -17,6 +17,7 @@ module.exports = class MemoryClient {
       maxmember,
       peers: [],
       isclose: false,
+      sec: 0,
     };
     this.RoomDatabase[roomid] = room;
     const obj = {
@@ -87,11 +88,6 @@ module.exports = class MemoryClient {
     return result;
   }
 
-  async getRoomCount() {
-    console.log(this.RoomDatabase.length);
-    return { count: this.RoomDatabase.length };
-  }
-
   async getRooms() {
     const rooms = [];
     Object.keys(this.RoomDatabase).forEach((key) => {
@@ -120,5 +116,14 @@ module.exports = class MemoryClient {
       }
     }
     return null;
+  }
+
+  tickRooms(destroySec) {
+    Object.keys(this.RoomDatabase).forEach((key) => {
+      this.RoomDatabase[key].sec += 1;
+      if (this.RoomDatabase[key].sec >= destroySec) {
+        delete this.RoomDatabase[key];
+      }
+    }, this.RoomDatabase);
   }
 };
