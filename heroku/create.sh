@@ -2,9 +2,9 @@
 cd `dirname $0`
 UUIDTEXT=`uuidgen`
 UUID=${UUIDTEXT:0:7}
-LUUID=`echo ${UUID} | tr ‘[A-Z]’ ‘[a-z]’`
-heroku create "unip2p-"$LUUID
-git remote set-url heroku https://git.heroku.com/unip2p-${LUUID}.git
+URI=`echo ${UUID} | tr ‘[A-Z]’ ‘[a-z]’`
+heroku create "unip2p-"$URI
+git remote set-url heroku https://git.heroku.com/unip2p-${URI}.git
 git add ../
 git commit -m "Publish Heroku"
 git push heroku master
@@ -15,11 +15,10 @@ SecretKey=${SecretKeyTEXT:0:7}${SecretKeyTEXT:9:13}
 
 heroku config:set GAMEKEY=${GameKey}
 heroku config:set SERCETKEY=${SecretKey}
+echo ${URI} > ./url
 
-echo MatchingServerURL: https://unip2p-${LUUID}.herokuapp.com/
-echo MatchingSecretKey: ${GameKey}
+echo MatchingServerURL: https://unip2p-${URI}.herokuapp.com/
+echo MatchingGameKey: ${GameKey}
 echo MatchingSecretKey: ${SecretKey}
 
-
-
-echo ${LUUID} > ./url
+open https://unip2p-${URI}.herokuapp.com/${GameKey}
