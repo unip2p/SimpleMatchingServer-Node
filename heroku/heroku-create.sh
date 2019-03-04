@@ -3,7 +3,7 @@ UUIDTEXT=`uuidgen`
 UUID=${UUIDTEXT:0:7}
 LUUID=`echo ${UUID} | tr ‘[A-Z]’ ‘[a-z]’`
 heroku create "unip2p-"$LUUID
-git remote set-url heroku https://unip2p-${LUUID}.herokuapp.com/
+git remote set-url heroku https://git.heroku.com/unip2p-${LUUID}.git
 git add .
 git commit -m "Publish Heroku"
 git push heroku master
