@@ -13,10 +13,15 @@ if (process.env.REDIS_URL) {
   client = new MemoryClient();
 }
 
+// AppSetting
+const Gamekey = process.env.GAMEKEY;
+const Secretkey = process.env.SERCETKEY;
+
+
 // Express Settings
 const app = express();
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 
 // Accept CORS
 app.use((req, res, next) => {
@@ -29,71 +34,87 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 // Express GET
-app.get('/', (req, res) => {
-  res.send('Welcome to UniP2P Matching Server');
+app.get(`/${Gamekey}`, (req, res) => {
+  res.send(`Welcome to UniP2P Matching Server GameID:${Gamekey}`);
 });
 
-app.get('/status', (req, res) => {
+app.get(`/${Gamekey}/status`, (req, res) => {
   res.send(200);
 });
 
-app.post('/rooms', (req, res) => {
-  const result = client.getRoomList();
-  res.send(JSON.stringify(result));
+app.get(`/${Gamekey}/rooms`, (req, res, next) => {
+  (async () => {
+    const result = await client.getRooms();
+    res.send(result);
+  })().catch(next);
 });
 
-app.get('/rooms/count', (req, res) => {
-  const result = client.getRoomCount();
-  res.json(JSON.stringify(result));
+app.get(`/${Gamekey}/rooms/count`, (req, res, next) => {
+  (async () => {
+    const result = await client.getRoomCount();
+    res.send((result));
+  })().catch(next);
 });
 
-app.post('/rooms/create', (req, res) => {
-  const { peerid } = req.body;
-  const { roomname } = req.body;
-  const { maxmember } = req.body;
+app.post(`/${Gamekey}/rooms/create`, async (req, res, next) => {
+  (async () => {
+    const { peerid } = req.body;
+    const { roomname } = req.body;
+    const { maxmember } = req.body;
 
-  const result = client.createRoom(peerid, roomname, maxmember);
+    const result = await client.createRoom(peerid, roomname, maxmember);
 
-  res.send(JSON.stringify(result));
+    res.send(result);
+  })().catch(next);
 });
 
-app.post('/rooms/join', (req, res) => {
-  const { peerid } = req.body;
-  const { roomid } = req.body;
-  const { IPEndPoint } = req.body;
+app.post(`/${Gamekey}/rooms/join`, (req, res, next) => {
+  (async () => {
+    const { peerid } = req.body;
+    const { roomid } = req.body;
+    const { IPEndPoint } = req.body;
 
-  const result = client.joinRoom(peerid, roomid, IPEndPoint);
+    const result = await client.joinRoom(peerid, roomid, IPEndPoint);
 
-  res.send(JSON.stringify(result));
+    res.send(result);
+  })().catch(next);
 });
 
-app.post('/rooms/joinramdom', (req, res) => {
-  const { peerid } = req.body;
-  const { IPEndPoint } = req.body;
+app.post(`/${Gamekey}/rooms/joinramdom`, (req, res, next) => {
+  (async () => {
+    const { peerid } = req.body;
+    const { IPEndPoint } = req.body;
 
-  const result = client.joinRandomRoom(peerid, IPEndPoint);
+    const result = await client.joinRandomRoom(peerid, IPEndPoint);
 
-  res.send(JSON.stringify(result));
+    res.send(result);
+  })().catch(next);
 });
 
-app.post('/rooms/check', (req, res) => {
-  const { peerid } = req.body;
-  const { roomid } = req.body;
+app.post(`/${Gamekey}/rooms/check`, (req, res, next) => {
+  (async () => {
+    const { peerid } = req.body;
+    const { roomid } = req.body;
 
-  const result = client.checkRoom(peerid, roomid);
+    const result = await client.checkRoom(peerid, roomid);
 
-  res.send(JSON.stringify(result));
+    res.send(result);
+  })().catch(next);
 });
 
-app.post('/rooms/close', (req, res) => {
-  const { peerid } = req.body;
-  const { roomid } = req.body;
-  const { token } = req.body;
+app.post(`/${Gamekey}/rooms/close`, (req, res, next) => {
+  (async () => {
+    const { peerid } = req.body;
+    const { roomid } = req.body;
+    const { token } = req.body;
 
-  const result = client.closeRoom(peerid, roomid, token);
+    const result = await client.closeRoom(peerid, roomid, token);
 
-  res.send(JSON.stringify(result));
+    res.send(result);
+  })().catch(next);
 });
 
 app.listen(PORT, () => {
 });
+
+module.exports = app;

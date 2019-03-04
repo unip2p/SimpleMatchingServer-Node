@@ -3,7 +3,7 @@ require('dotenv').config();
 
 module.exports = class MemoryClient {
   constructor() {
-    this.RoomDatabase = null;
+    this.RoomDatabase = {};
   }
 
   async createRoom(peerid, roomname, maxmember) {
@@ -15,10 +15,7 @@ module.exports = class MemoryClient {
       hostpeerid: peerid,
       hosttoken: token,
       maxmember,
-      peers: [{
-        id: '',
-        ip: '',
-      }],
+      peers: [],
       isclose: false,
     };
     this.RoomDatabase[roomid] = room;
@@ -32,7 +29,7 @@ module.exports = class MemoryClient {
   async joinRoom(peerid, roomid, ip) {
     const room = this.RoomDatabase[roomid];
 
-    if (room == null && room.isclose) {
+    if (room == null || room.isclose) {
       return (404);
     }
     if (room.peers.length >= room.maxmember) {
@@ -50,21 +47,12 @@ module.exports = class MemoryClient {
     if (roomid === null) {
       return 404;
     }
-    return this.joinRoom(peerid, this.pickupRandomRoom(), ip);
-  }
-
-  pickupRandomRoom() {
-    const index = Math.floor(Math.random() * this.RoomDatabase.length);
-    if (this.RoomDatabase[index].peers.length >= this.RoomDatabase[index].maxmember
-    && !this.RoomDatabase[index].isclose) {
-      return this.RoomDatabase[index].roomid;
-    }
-    return null;
+    return this.joinRoom(peerid, roomid, ip);
   }
 
   async checkRoom(peerid, roomid) {
     const room = this.RoomDatabase[roomid];
-    if (room == null) {
+    if (room === null) {
       return (404);
     } if (this.isJoinedPeer(peerid, roomid)) {
       const obj = {
@@ -77,6 +65,9 @@ module.exports = class MemoryClient {
   }
 
   async closeRoom(peerid, roomid, token) {
+    if (this.RoomDatabase[roomid] === null) {
+      return 404;
+    }
     if (this.RoomDatabase[roomid].hostpeerid === peerid
      && this.RoomDatabase[roomid].hosttoken === token) {
       this.RoomDatabase[roomid].isclose = true;
@@ -97,20 +88,37 @@ module.exports = class MemoryClient {
   }
 
   async getRoomCount() {
+    console.log(this.RoomDatabase.length);
     return { count: this.RoomDatabase.length };
   }
 
-  async getRoomList() {
-    let rooms;
-    this.RoomDatabase.forEach((value) => {
+  async getRooms() {
+    const rooms = [];
+    Object.keys(this.RoomDatabase).forEach((key) => {
+      const value = this.RoomDatabase[key];
       const obj = {
         roomid: value.roomid,
         roomname: value.roomname,
         maxmember: value.maxmember,
-        currentmember: value.peers.length,
+        currentmember: value.peers.length || 0,
+        isclose: value.isclose,
       };
       rooms.push(obj);
-    });
+    }, this.RoomDatabase);
     return (rooms);
+  }
+
+  pickupRandomRoom() {
+    if (this.RoomDatabase.length === 0 || this.RoomDatabase.length === undefined) {
+      return null;
+    }
+    while (this.RoomDatabase.length !== 0) {
+      const index = Math.floor(Math.random() * this.RoomDatabase.length);
+      const peercount = this.RoomDatabase[index].peers.length || 0;
+      if (peercount >= this.RoomDatabase[index].maxmember && !this.RoomDatabase[index].isclose) {
+        return this.RoomDatabase[index].roomid;
+      }
+    }
+    return null;
   }
 };
