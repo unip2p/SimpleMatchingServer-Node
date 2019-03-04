@@ -1,4 +1,5 @@
 #!/bin/bash
+cd `dirname $0`
 UUIDTEXT=`uuidgen`
 UUID=${UUIDTEXT:0:7}
 LUUID=`echo ${UUID} | tr ‘[A-Z]’ ‘[a-z]’`
