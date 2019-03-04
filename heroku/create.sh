@@ -16,4 +16,4 @@ echo MatchingSecretKey: ${SecretKey}
 
 heroku open
 
-${LUUID} > ./url
+echo ${LUUID} > ./url
