@@ -1,1 +1,6 @@
-heroku apps:destroy --app アプリ名
+#!/bin/bash
+cd `dirname $0`
+while read line
+do
+  heroku apps:destroy --app $line
+done < url
