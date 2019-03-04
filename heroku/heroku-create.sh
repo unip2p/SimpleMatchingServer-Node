@@ -10,5 +10,5 @@ git push heroku master
 SecretKeyTEXT=`uuidgen`
 SecretKey=${SecretKeyTEXT:0:7}${SecretKeyTEXT:9:13}${SecretKeyTEXT:15:19}${SecretKeyTEXT:21:25}${SecretKeyTEXT:27:39}
 
-echo MatchingServerURL: https://unip2p-${UUID}.herokuapp.com/
+echo MatchingServerURL: https://unip2p-${LUUID}.herokuapp.com/
 echo MatchingSecretKey: 
