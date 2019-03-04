@@ -57,7 +57,7 @@ app.use(bodyParser.json());
 
 // Express GET
 app.get(`/${Gamekey}`, (req, res) => {
-  res.send(`Welcome to UniP2P Matching Server GameID:${Gamekey}`);
+  res.send('Welcome to UniP2P Matching Server!!');
 });
 
 app.get(`/${Gamekey}/status`, (req, res) => {
