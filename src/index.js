@@ -16,7 +16,15 @@ if (process.env.REDIS_URL) {
 }
 
 // AppSetting
-const Gamekey = process.env.GAMEKEY || '';
+const Gamekey = process.env.GAMEKEY || undefined;
+function GameKeyPath() {
+  if (Gamekey === undefined) {
+    return '';
+  }
+
+  return `/${Gamekey}`;
+}
+
 const Secretkey = process.env.SERCETKEY || '';
 const RoomDestorySec = process.env.ROOMTIME || 1200;
 
@@ -56,16 +64,20 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 // Express GET
-app.get(`/${Gamekey}`, (req, res) => {
+app.get(`${GameKeyPath()}`, (req, res) => {
   res.send('Welcome to UniP2P Matching Server!!');
 });
 
-app.get(`/${Gamekey}/status`, (req, res) => {
+app.get(`${GameKeyPath()}/status`, (req, res) => {
   res.sendStatus(200);
 });
 
+let roomsCache = {};
+
 function refreshRooms() {
-  this.roomsCache = client.getRooms();
+  (async () => {
+    roomsCache = await client.getRooms();
+  })().catch();
 }
 
 const roomsjob = new CronJob({
@@ -82,32 +94,28 @@ const roomcounterjob = new CronJob({
   },
 });
 
-
-app.get(`/${Gamekey}/rooms`, (req, res, next) => {
+app.get(`${GameKeyPath()}/rooms`, (req, res, next) => {
   (async () => {
-    res.send(this.roomsCache);
-  })().catch(next);
-});
-
-app.get(`/${Gamekey}/rooms/count`, (req, res, next) => {
-  (async () => {
-    if (this.roomsCache === undefined) {
-      res.send({ count: 0 });
+    if (roomsCache.length === 0) {
+      res.sendStatus(404);
     } else {
-      res.send({ count: this.roomsCache.length });
+      res.send({ rooms: roomsCache });
     }
   })().catch(next);
 });
 
-app.post(`/${Gamekey}/rooms/create`, async (req, res, next) => {
+app.post(`${GameKeyPath()}/rooms/create`, async (req, res, next) => {
   (async () => {
     const { peerid } = req.body;
     const { roomname } = req.body;
     const { maxmember } = req.body;
+    const { publicmetadata } = req.body;
+    const { privatemetadata } = req.body;
     const { hash } = req.body;
 
-    if (calcHash(`${peerid}${roomname}${maxmember}`, hash)) {
-      const result = await client.createRoom(peerid, roomname, maxmember);
+    if (calcHash(`${peerid}${roomname}${maxmember}${publicmetadata}${privatemetadata}`, hash)) {
+      const result = await client.createRoom(peerid,
+        roomname, maxmember, publicmetadata, privatemetadata);
       res.send(result);
     } else {
       res.sendStatus(403);
@@ -115,7 +123,7 @@ app.post(`/${Gamekey}/rooms/create`, async (req, res, next) => {
   })().catch(next);
 });
 
-app.post(`/${Gamekey}/rooms/join`, (req, res, next) => {
+app.post(`${GameKeyPath()}/rooms/join`, (req, res, next) => {
   (async () => {
     const { peerid } = req.body;
     const { roomid } = req.body;
@@ -131,7 +139,7 @@ app.post(`/${Gamekey}/rooms/join`, (req, res, next) => {
   })().catch(next);
 });
 
-app.post(`/${Gamekey}/rooms/joinramdom`, (req, res, next) => {
+app.post(`${GameKeyPath()}/rooms/joinramdom`, (req, res, next) => {
   (async () => {
     const { peerid } = req.body;
     const { IPEndPoint } = req.body;
@@ -146,14 +154,15 @@ app.post(`/${Gamekey}/rooms/joinramdom`, (req, res, next) => {
   })().catch(next);
 });
 
-app.post(`/${Gamekey}/rooms/check`, (req, res, next) => {
+app.post(`${GameKeyPath()}/rooms/check`, (req, res, next) => {
   (async () => {
     const { peerid } = req.body;
     const { roomid } = req.body;
+    const { token } = req.body;
     const { hash } = req.body;
 
-    if (calcHash(`${peerid}${roomid}`, hash)) {
-      const result = await client.checkRoom(peerid, roomid);
+    if (calcHash(`${peerid}${roomid}${token}`, hash)) {
+      const result = await client.checkRoom(peerid, roomid, token);
       res.send(result);
     } else {
       res.sendStatus(403);
@@ -161,7 +170,7 @@ app.post(`/${Gamekey}/rooms/check`, (req, res, next) => {
   })().catch(next);
 });
 
-app.post(`/${Gamekey}/rooms/close`, (req, res, next) => {
+app.post(`${GameKeyPath()}/rooms/close`, (req, res, next) => {
   (async () => {
     const { peerid } = req.body;
     const { roomid } = req.body;
@@ -170,7 +179,7 @@ app.post(`/${Gamekey}/rooms/close`, (req, res, next) => {
 
     if (calcHash(`${peerid}${roomid}${token}`, hash)) {
       const result = await client.closeRoom(peerid, roomid, token);
-      res.send(result);
+      res.sendStatus(result);
     } else {
       res.sendStatus(403);
     }
