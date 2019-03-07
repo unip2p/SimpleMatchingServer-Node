@@ -13,8 +13,8 @@
     "lint:fix": "eslint src --fix"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "iRosSoftware",
+  "license": "MIT License",
   "dependencies": {
     "body-parser": "^1.18.3",
     "cron": "^1.6.0",

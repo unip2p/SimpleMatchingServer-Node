@@ -26,7 +26,8 @@ function GameKeyPath() {
 }
 
 const Secretkey = process.env.SERCETKEY || '';
-const RoomDestorySec = process.env.ROOMTIME || 1200;
+const RoomRefreshSec = process.env.ROOMREFRESHTIME || 1;
+const RoomDestorySec = process.env.ROOMDESTORYTIME || 1200;
 
 // Security
 function calcHash(data, hash) {
@@ -63,7 +64,7 @@ app.use((req, res, next) => {
 // bodyParser
 app.use(bodyParser.json());
 
-// Express GET
+
 app.get(`${GameKeyPath()}`, (req, res) => {
   res.send('Welcome to UniP2P Matching Server!!');
 });
@@ -81,7 +82,7 @@ function refreshRooms() {
 }
 
 const roomsjob = new CronJob({
-  cronTime: '*/3 * * * * *',
+  cronTime: `*/${RoomRefreshSec} * * * * *`,
   onTick() {
     refreshRooms();
   },
@@ -99,7 +100,7 @@ app.get(`${GameKeyPath()}/rooms`, (req, res, next) => {
     if (roomsCache.length === 0) {
       res.sendStatus(404);
     } else {
-      res.send({ rooms: roomsCache });
+      res.send(roomsCache);
     }
   })().catch(next);
 });
@@ -127,11 +128,10 @@ app.post(`${GameKeyPath()}/rooms/join`, (req, res, next) => {
   (async () => {
     const { peerid } = req.body;
     const { roomid } = req.body;
-    const { IPEndPoint } = req.body;
+    const { ip } = req.body;
     const { hash } = req.body;
-
-    if (calcHash(`${peerid}${roomid}${IPEndPoint}`, hash)) {
-      const result = await client.joinRoom(peerid, roomid, IPEndPoint);
+    if (calcHash(`${peerid}${roomid}${ip}`, hash)) {
+      const result = await client.joinRoom(peerid, roomid, ip);
       res.send(result);
     } else {
       res.sendStatus(403);
@@ -142,11 +142,11 @@ app.post(`${GameKeyPath()}/rooms/join`, (req, res, next) => {
 app.post(`${GameKeyPath()}/rooms/joinramdom`, (req, res, next) => {
   (async () => {
     const { peerid } = req.body;
-    const { IPEndPoint } = req.body;
+    const { ip } = req.body;
     const { hash } = req.body;
 
-    if (calcHash(`${peerid}${IPEndPoint}`, hash)) {
-      const result = await client.joinRandomRoom(peerid, IPEndPoint);
+    if (calcHash(`${peerid}${ip}`, hash)) {
+      const result = await client.joinRandomRoom(peerid, ip);
       res.send(result);
     } else {
       res.sendStatus(403);

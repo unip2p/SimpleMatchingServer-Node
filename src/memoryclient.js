@@ -6,15 +6,15 @@ module.exports = class MemoryClient {
     this.RoomDatabase = {};
   }
 
-  async createRoom(peerid, roomname, maxmember, pubmeta, primeta) {
+  async createRoom(peerid, name, max, pubmeta, primeta) {
     const roomid = uuid.v4();
     const token = uuid.v4().split('-').join('');
     const room = {
       roomid,
-      roomname,
+      roomname: name,
       hostpeerid: peerid,
       hosttoken: token,
-      maxmember,
+      maxmember: max,
       peers: [],
       isclose: false,
       sec: 0,
@@ -32,7 +32,7 @@ module.exports = class MemoryClient {
   async joinRoom(peerid, roomid, ip) {
     const room = this.RoomDatabase[roomid];
 
-    if (room == null || room.isclose) {
+    if (room == null || room === undefined || room.isclose) {
       return (404);
     }
     if (room.peers.length >= room.maxmember) {
@@ -73,7 +73,6 @@ module.exports = class MemoryClient {
 
       const obj = {
         peers,
-        publicmetadata: room.publicmetadata,
         isclose: room.isclose,
       };
       return (obj);
@@ -96,11 +95,10 @@ module.exports = class MemoryClient {
   async isJoinedPeer(peerid, roomid, token) {
     const room = this.RoomDatabase[roomid];
     let result = false;
-    Object.keys(room.peers).some((key) => {
+    Object.keys(room.peers).forEach((key) => {
       const value = this.room.peers[key];
       if (value.id === peerid && value.token === token) {
         result = true;
-        return true;
       }
     }, room.peers);
 
@@ -111,20 +109,22 @@ module.exports = class MemoryClient {
     const rooms = [];
     Object.keys(this.RoomDatabase).forEach((key) => {
       const value = this.RoomDatabase[key];
-      const obj = {
-        roomid: value.roomid,
-        roomname: value.roomname,
-        maxmember: value.maxmember,
-        currentmember: value.peers.length || 0,
-        isclose: value.isclose,
-      };
-      rooms.push(obj);
+      if (value.isclose === false) {
+        const obj = {
+          roomid: value.roomid,
+          roomname: value.roomname,
+          maxmember: value.maxmember,
+          currentmember: value.peers.length || 0,
+          publicmetadata: value.publicmetadata,
+        };
+        rooms.push(obj);
+      }
     }, this.RoomDatabase);
     return (rooms);
   }
 
   pickupRandomRoom() {
-    if (this.RoomDatabase.length === 0 || this.RoomDatabase.length === undefined) {
+    if (this.RoomDatabase.length === 0 || this.RoomDatabase === undefined) {
       return null;
     }
     while (this.RoomDatabase.length !== 0) {
