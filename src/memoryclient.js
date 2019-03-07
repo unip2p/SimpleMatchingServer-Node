@@ -65,12 +65,10 @@ module.exports = class MemoryClient {
       return (404);
     } if (this.isJoinedPeer(peerid, roomid, token)) {
       const peers = [];
-      Object.keys(room.peers).forEach((key) => {
-        const value = this.room.peers[key];
+      room.peers.forEach((value) => {
         const obj = { id: value.id, ip: value.ip };
         peers.push(obj);
-      }, this.RoomDatabase);
-
+      });
       const obj = {
         peers,
         isclose: room.isclose,
@@ -95,12 +93,11 @@ module.exports = class MemoryClient {
   async isJoinedPeer(peerid, roomid, token) {
     const room = this.RoomDatabase[roomid];
     let result = false;
-    Object.keys(room.peers).forEach((key) => {
-      const value = this.room.peers[key];
+    room.peers.forEach((value) => {
       if (value.id === peerid && value.token === token) {
         result = true;
       }
-    }, room.peers);
+    });
 
     return result;
   }
