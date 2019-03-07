@@ -2,5 +2,5 @@
 cd `dirname $0`
 while read line
 do
-  heroku apps:destroy --app $line --confirm unip2p-$line
+  heroku apps:destroy --app $line --confirm $line
 done < url
