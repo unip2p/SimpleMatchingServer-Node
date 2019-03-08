@@ -110,13 +110,11 @@ app.post(`${GameKeyPath()}/rooms/create`, async (req, res, next) => {
     const { peerid } = req.body;
     const { roomname } = req.body;
     const { maxmember } = req.body;
-    const { publicmetadata } = req.body;
-    const { privatemetadata } = req.body;
+    const { metadata } = req.body;
     const { hash } = req.body;
 
-    if (calcHash(`${peerid}${roomname}${maxmember}${publicmetadata}${privatemetadata}`, hash)) {
-      const result = await client.createRoom(peerid,
-        roomname, maxmember, publicmetadata, privatemetadata);
+    if (calcHash(`${peerid}${roomname}${maxmember}${metadata}`, hash)) {
+      const result = await client.createRoom(peerid, roomname, maxmember, metadata);
       res.send(result);
     } else {
       res.sendStatus(403);
@@ -129,9 +127,10 @@ app.post(`${GameKeyPath()}/rooms/join`, (req, res, next) => {
     const { peerid } = req.body;
     const { roomid } = req.body;
     const { ip } = req.body;
+    const { metadata } = req.body;
     const { hash } = req.body;
-    if (calcHash(`${peerid}${roomid}${ip}`, hash)) {
-      const result = await client.joinRoom(peerid, roomid, ip);
+    if (calcHash(`${peerid}${roomid}${ip}${metadata}`, hash)) {
+      const result = await client.joinRoom(peerid, roomid, ip, metadata);
       res.send(result);
     } else {
       res.sendStatus(403);
@@ -143,10 +142,11 @@ app.post(`${GameKeyPath()}/rooms/joinramdom`, (req, res, next) => {
   (async () => {
     const { peerid } = req.body;
     const { ip } = req.body;
+    const { metadata } = req.body;
     const { hash } = req.body;
 
     if (calcHash(`${peerid}${ip}`, hash)) {
-      const result = await client.joinRandomRoom(peerid, ip);
+      const result = await client.joinRandomRoom(peerid, ip, metadata);
       res.send(result);
     } else {
       res.sendStatus(403);

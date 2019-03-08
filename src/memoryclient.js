@@ -6,7 +6,7 @@ module.exports = class MemoryClient {
     this.RoomDatabase = {};
   }
 
-  async createRoom(peerid, name, max, pubmeta, primeta) {
+  async createRoom(peerid, name, max, pubmeta) {
     const roomid = uuid.v4();
     const token = uuid.v4().split('-').join('');
     const room = {
@@ -19,7 +19,6 @@ module.exports = class MemoryClient {
       isclose: false,
       sec: 0,
       publicmetadata: pubmeta,
-      privatemetadata: primeta,
     };
     this.RoomDatabase[roomid] = room;
     const obj = {
@@ -29,7 +28,7 @@ module.exports = class MemoryClient {
     return obj;
   }
 
-  async joinRoom(peerid, roomid, ip) {
+  async joinRoom(peerid, roomid, ip, meta) {
     const room = this.RoomDatabase[roomid];
 
     if (room == null || room === undefined || room.isclose) {
@@ -40,23 +39,24 @@ module.exports = class MemoryClient {
     }
     const token = uuid.v4().split('-').join('');
 
-    room.peers.push({ id: peerid, ip, token });
+    room.peers.push({
+      id: peerid, ip, token, metadata: meta,
+    });
     const obj = {
       roomid,
       peers: room.peers,
       token,
       publicmetadata: room.publicmetadata,
-      privatemetadata: room.privatemetadata,
     };
     return (obj);
   }
 
-  async joinRandomRoom(peerid, ip) {
+  async joinRandomRoom(peerid, ip, metadata) {
     const roomid = this.pickupRandomRoom();
     if (roomid === null) {
       return 404;
     }
-    return this.joinRoom(peerid, roomid, ip);
+    return this.joinRoom(peerid, roomid, ip, metadata);
   }
 
   async checkRoom(peerid, roomid, token) {
