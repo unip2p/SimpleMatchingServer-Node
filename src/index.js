@@ -127,10 +127,11 @@ app.post(`${GameKeyPath()}/rooms/join`, (req, res, next) => {
     const { peerid } = req.body;
     const { roomid } = req.body;
     const { ip } = req.body;
+    const { localport } = req.body;
     const { metadata } = req.body;
     const { hash } = req.body;
-    if (calcHash(`${peerid}${roomid}${ip}${metadata}`, hash)) {
-      const result = await client.joinRoom(peerid, roomid, ip, metadata);
+    if (calcHash(`${peerid}${roomid}${ip}${localport}${metadata}`, hash)) {
+      const result = await client.joinRoom(peerid, roomid, ip, localport, metadata);
       res.send(result);
     } else {
       res.sendStatus(403);
@@ -142,11 +143,12 @@ app.post(`${GameKeyPath()}/rooms/joinramdom`, (req, res, next) => {
   (async () => {
     const { peerid } = req.body;
     const { ip } = req.body;
+    const { localport } = req.body;
     const { metadata } = req.body;
     const { hash } = req.body;
 
     if (calcHash(`${peerid}${ip}`, hash)) {
-      const result = await client.joinRandomRoom(peerid, ip, metadata);
+      const result = await client.joinRandomRoom(peerid, ip, localport, metadata);
       res.send(result);
     } else {
       res.sendStatus(403);
