@@ -28,7 +28,7 @@ module.exports = class MemoryClient {
     return obj;
   }
 
-  async joinRoom(peerid, roomid, ip, local, encrypt, meta) {
+  async joinRoom(peerid, roomid, ip, local, meta) {
     const room = this.RoomDatabase[roomid];
 
     if (room == null || room === undefined || room.isclose) {
@@ -40,7 +40,7 @@ module.exports = class MemoryClient {
     const token = uuid.v4().split('-').join('');
 
     room.peers.push({
-      id: peerid, ip, token, localport: local, encrypt, metadata: meta,
+      id: peerid, ip, token, localport: local, metadata: meta,
     });
     const obj = {
       roomid,
@@ -70,7 +70,6 @@ module.exports = class MemoryClient {
           id: value.id,
           ip: value.ip,
           localport: value.localport,
-          encrypt: value.encrypt,
           metadata: value.metadata,
         };
         peers.push(obj);
