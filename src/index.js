@@ -180,7 +180,8 @@ app.post(`${GameKeyPath()}/rooms/close`, (req, res, next) => {
     const { token } = req.body;
     const { hash } = req.body;
 
-    if (calcHash(`${peerid}${roomid}${token}`, hash)) {
+    if (calcHash(`${peerid}${
+      roomid}${token}`, hash)) {
       const result = await client.closeRoom(peerid, roomid, token);
       res.sendStatus(result);
     } else {
