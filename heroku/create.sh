@@ -18,7 +18,7 @@ heroku config:set SERCETKEY=${SecretKey}
 echo MatchingServerURL:${URI} > ./url
 echo MatchingGameKey:${GameKey}  > ./key
 echo MatchingSecretKey:${SecretKey} > ./key
-echo .
+echo -n -e "\n"
 echo MatchingServerURL:https://${URI}.herokuapp.com
 echo MatchingGameKey:${GameKey}
 echo MatchingSecretKey:${SecretKey}
