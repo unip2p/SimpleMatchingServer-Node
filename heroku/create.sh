@@ -10,13 +10,14 @@ git commit -m "Publish Heroku"
 git push heroku master
 
 GameKey=`uuidgen`
-SecretKeyTEXT=`uuidgen`
-SecretKey=${SecretKeyTEXT:0:7}${SecretKeyTEXT:9:13}
+SecretKey=`uuidgen`
 
 heroku config:set GAMEKEY=${GameKey}
 heroku config:set SERCETKEY=${SecretKey}
+
 echo MatchingServerURL:${URI} > ./url
-echo MatchingGameKey:${GameKey} echo MatchingSecretKey:${SecretKey} > ./key
+echo MatchingGameKey:${GameKey}  > ./key
+echo MatchingSecretKey:${SecretKey} > ./key
 
 echo MatchingServerURL:https://${URI}.herokuapp.com
 echo MatchingGameKey:${GameKey}
