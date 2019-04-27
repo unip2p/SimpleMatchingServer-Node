@@ -26,7 +26,7 @@ function GameKeyPath() {
 }
 
 const Secretkey = process.env.SERCETKEY || '';
-const RoomRefreshSec = process.env.ROOMREFRESHTIME || 1;
+const RoomRefreshSec = process.env.ROOMREFRESHTIME || 3;
 const RoomDestorySec = process.env.ROOMDESTORYTIME || 1200;
 
 // Security
