@@ -7,7 +7,7 @@ const MemoryClient = require('./memoryclient');
 // dotenv
 require('dotenv').config();
 
-// Datastore
+// datastore
 let client;
 if (process.env.REDIS_URL) {
   // Redis in progress
@@ -15,7 +15,7 @@ if (process.env.REDIS_URL) {
   client = new MemoryClient();
 }
 
-// AppSetting
+// App Setting
 const Gamekey = process.env.GAMEKEY || undefined;
 function GameKeyPath() {
   if (Gamekey === undefined) {
