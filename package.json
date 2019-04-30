@@ -14,7 +14,7 @@
     "lint:fix": "eslint src --fix"
   },
   "keywords": [],
-  "author": "iRosSoftware",
+  "author": "ChujoHiroto",
   "license": "MIT License",
   "dependencies": {
     "body-parser": "^1.18.3",
