@@ -92,6 +92,19 @@ const roomcounterjob = new CronJob({
   },
 });
 
+const API_VERSION = '2019-05-01';
+
+app.post(`${GameKeyPath()}/version`, async (req, res, next) => {
+  (async () => {
+    const { version } = req.body;
+    if (API_VERSION === version) {
+      res.sendStatus(200);
+    } else {
+      res.sendStatus(501);
+    }
+  })().catch(next);
+});
+
 app.get(`${GameKeyPath()}/rooms`, (req, res, next) => {
   (async () => {
     if (roomsCache.length === 0) {
