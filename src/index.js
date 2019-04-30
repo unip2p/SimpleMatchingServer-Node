@@ -35,17 +35,13 @@ function calcHash(data, hash) {
     return true;
   }
   let result;
-  crypto.pbkdf2(data, Secretkey, 1000, 256, 'sha256', (err, key) => {
-    if (!err) {
-      if (key === hash) {
-        result = true;
-      } else {
-        result = false;
-      }
-    } else {
-      result = false;
-    }
-  });
+  const pass = crypto.pbkdf2Sync(data, Secretkey, 1000, 32);
+  const key = Buffer.from(pass).toString('base64');
+  if (key === hash) {
+    result = true;
+  } else {
+    result = false;
+  }
   return result;
 }
 
