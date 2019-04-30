@@ -35,8 +35,9 @@ function calcHash(data, hash) {
     return true;
   }
   let result;
-  const pass = crypto.pbkdf2Sync(data, Secretkey, 1000, 32);
-  const key = Buffer.from(pass).toString('base64');
+  const hmac = crypto.createHmac('sha256', Secretkey);
+  hmac.update(data);
+  const key = hmac.digest('base64');
   if (key === hash) {
     result = true;
   } else {
