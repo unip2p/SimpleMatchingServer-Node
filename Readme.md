@@ -30,3 +30,7 @@ $ bash heroku/create.sh
 
 ## Unity側の設定
 上記のスクリプトを実行した後、出てくるMatchingServerURI、GameKey、SecretKeyをメモして、UniP2PのMatchingSettingで設定する
+
+## License
+
+  [MIT](LICENSE)
