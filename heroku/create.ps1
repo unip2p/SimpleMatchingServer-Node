@@ -14,7 +14,7 @@ heroku config:set GAMEKEY=$GameKey
 heroku config:set SERCETKEY=$SecretKey
 
 Write-Output MatchingServerURL:$URI > ./url
-Write-Output MatchingGameKey:$GameKey\nMatchingSecretKey:$SecretKey > ./key
+Write-Output MatchingGameKey:$GameKey`r`nMatchingSecretKey:$SecretKey > ./key
 
 Write-Output MatchingServerURL:https://$URI.herokuapp.com
 Write-Output MatchingGameKey:$GameKey
