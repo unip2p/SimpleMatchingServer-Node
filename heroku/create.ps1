@@ -20,4 +20,4 @@ Write-Output MatchingServerURL:https://$URI.herokuapp.com
 Write-Output MatchingGameKey:$GameKey
 Write-Output MatchingSecretKey:$SecretKey
 
-open https://$URI.herokuapp.com/$GameKey
+Read-Host
