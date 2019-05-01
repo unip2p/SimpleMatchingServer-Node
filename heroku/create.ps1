@@ -1,5 +1,5 @@
 $UUID = ([Guid]::NewGuid()).ToString().split("-")[0]
-$URI = unip2p-$UUID
+$URI = "unip2p-" + $UUID
 heroku create $URI
 
 git remote set-url heroku https://git.heroku.com/${URI}.git
@@ -14,8 +14,7 @@ heroku config:set GAMEKEY=$GameKey
 heroku config:set SERCETKEY=$SecretKey
 
 Write-Output MatchingServerURL:$URI > ./url
-Write-Output MatchingGameKey:$GameKey  > ./key
-Write-Output MatchingSecretKey:$SecretKey > ./key
+Write-Output MatchingGameKey:$GameKey\nMatchingSecretKey:$SecretKey > ./key
 
 Write-Output MatchingServerURL:https://$URI.herokuapp.com
 Write-Output MatchingGameKey:$GameKey
