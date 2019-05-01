@@ -12,7 +12,7 @@ $SecretKey = ([Guid]::NewGuid()).ToString()
 heroku config:set GAMEKEY=$GameKey
 heroku config:set SERCETKEY=$SecretKey
 
-Write-Output MatchingServerURL:$URI`r`nMatchingGameKey:$GameKey`r`nMatchingSecretKey:$SecretKey> ./MatchingServerSettings.txt
+Write-Output MatchingServerURL:$URI`r`nMatchingGameKey:$GameKey`r`nMatchingSecretKey:$SecretKey > ./MatchingServerSettings.txt
 
 Write-Output MatchingServerURL:https://$URI.herokuapp.com
 Write-Output MatchingGameKey:$GameKey
