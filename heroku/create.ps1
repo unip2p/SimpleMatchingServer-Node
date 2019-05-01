@@ -1,7 +1,7 @@
 $UUID = ([Guid]::NewGuid()).ToString().split("-")[0]
 $URI = "unip2p-" + $UUID
 heroku create $URI
-
+echo "https://git.heroku.com/" + $URI + ".git"
 git remote set-url heroku "https://git.heroku.com/" + $URI + ".git"
 git add ../
 git commit -m "Publish Heroku"
