@@ -8,6 +8,5 @@ yarn-error.log*
 # Dependency directories
 node_modules/
 
-# Matching Server Infomation
-heroku/url
-heroku/key
+# Matching Server Settings
+heroku/MatchingServerSettings.txt

@@ -12,11 +12,10 @@ $SecretKey = ([Guid]::NewGuid()).ToString()
 heroku config:set GAMEKEY=$GameKey
 heroku config:set SERCETKEY=$SecretKey
 
-Write-Output MatchingServerURL:$URI > ./url
-Write-Output MatchingGameKey:$GameKey`r`nMatchingSecretKey:$SecretKey > ./key
+Write-Output MatchingServerURL:$URI`r`nMatchingGameKey:$GameKey`r`nMatchingSecretKey:$SecretKey> ./MatchingServerSettings.txt
 
 Write-Output MatchingServerURL:https://$URI.herokuapp.com
 Write-Output MatchingGameKey:$GameKey
 Write-Output MatchingSecretKey:$SecretKey
 
-Read-Host
+Read-Host "Press any key to exit."
