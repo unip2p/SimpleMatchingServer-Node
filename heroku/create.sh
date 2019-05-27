@@ -4,6 +4,7 @@ UUIDTEXT=`uuidgen`
 UUID=${UUIDTEXT:0:18}
 URI=`echo unip2p-${UUID} | tr ‘[A-Z]’ ‘[a-z]’`
 heroku create $URI
+git remote rm heroku
 git remote add heroku https://git.heroku.com/${URI}.git
 git add ../
 git commit -m "Publish Heroku"
