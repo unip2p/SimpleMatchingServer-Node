@@ -16,8 +16,10 @@ SecretKey=`uuidgen`
 heroku config:set GAMEKEY=${GameKey}
 heroku config:set SERCETKEY=${SecretKey}
 
-echo -e MatchingServerURL:${URI}\nMatchingGameKey:${GameKey}\nMatchingSecretKey:${SecretKey}> ./MatchingServerSettings.txt
-echo -n -e "\n"
+echo MatchingServerURL:https://${URI}.herokuapp.com >> ./MatchingServerSettings.txt
+echo MatchingGameKey:${GameKey} >> ./MatchingServerSettings.txt
+echo MatchingSecretKey:${SecretKey} >> ./MatchingServerSettings.txt
+
 echo MatchingServerURL:https://${URI}.herokuapp.com
 echo MatchingGameKey:${GameKey}
 echo MatchingSecretKey:${SecretKey}
