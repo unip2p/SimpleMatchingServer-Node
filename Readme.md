@@ -4,7 +4,7 @@ UniP2Pに関しては、https://github.com/unip2p/unip2p
 
 # Usage
 ```bash
-$ git clone https://github.com/unip2p/SimpleMatchingServer-Node.js.git
+$ git clone https://github.com/unip2p/SimpleMatchingServer-Node.git
 
 $ cd SimpleMatchingServer-Node
 
